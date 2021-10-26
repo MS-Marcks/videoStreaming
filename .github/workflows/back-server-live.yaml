@@ -29,8 +29,8 @@ jobs:
           # Script to Run
           script: | 
             docker login -u ${{secrets.USERNAME_REPO}} -p ${{secrets.PASSWORD_REPO}} cloud.canister.io:5000
-            docker ps -a -q --filter "name=backapp" | grep -q . && docker stop backapp && docker rm -fv backapp && docker image rm cloud.canister.io:5000/msmarcks/back:latest || echo ""
-            docker run --name backapp -p "3000:3000" -e "KEY_TOKEN=DKCngTbQ0IzUMvqEto4ucxPHkPMrhXPsIkj6hsXDCjNb64zI9JyScaeW6fJ7SH8TResT5DUdnFsYbcRkzC35wRsYDuqe0yxaFNSVohPp1sHPP6seS88VB7y1gPMTsTZP" -e "TIME_PARTITION_CHUNK=102400" -d cloud.canister.io:5000/msmarcks/back:latest
+            docker ps -a -q --filter "name=backapplive" | grep -q . && docker stop backapplive && docker rm -fv backapplive && docker image rm cloud.canister.io:5000/msmarcks/back:latest || echo ""
+            docker run --name backapplive -p "3000:3000" -e "KEY_TOKEN=DKCngTbQ0IzUMvqEto4ucxPHkPMrhXPsIkj6hsXDCjNb64zI9JyScaeW6fJ7SH8TResT5DUdnFsYbcRkzC35wRsYDuqe0yxaFNSVohPp1sHPP6seS88VB7y1gPMTsTZP" -e "TIME_PARTITION_CHUNK=102400" -d cloud.canister.io:5000/msmarcks/back:latest
             exit
 
             
