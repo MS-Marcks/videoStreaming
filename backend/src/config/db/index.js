@@ -1,2 +1,2 @@
-let db = require("./db.json");
+let db = require("../../../db.json");
 exports.db = db;

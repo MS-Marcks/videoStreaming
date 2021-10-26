@@ -2,7 +2,7 @@ FROM node:14.17-alpine
 WORKDIR /app
 COPY . /app/
 RUN npm install
-RUN npm run create-folder
+RUN npm start
 COPY . /app/
 EXPOSE 3000
-CMD ["npm","run","run:system"]
+CMD ["node","build/server.s"]

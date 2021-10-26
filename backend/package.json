@@ -9,7 +9,6 @@
     "clean": "rm -rf build && mkdir build",
     "build-babel": "babel -d ./build src -s",
     "build": "npm run clean && npm run build-babel",
-    "run:system": "babel-node ./src/server",
     "start": "npm run build && npm run create-folder",
     "create-folder":"mkdir media && mkdir media/video && mkdir media/preload"
   },
