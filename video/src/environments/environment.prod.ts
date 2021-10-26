@@ -1,5 +1,6 @@
 export const environment = {
   production: true,
-  urlBase: 'http://localhost:3000/live/',
-  urlBasePreload: 'http://localhost:3000/',
+  urlBase: 'http://165.227.167.80:3333/live/',
+  urlBasePreload: 'http://165.227.167.80:3333/',
+  urlBaseEmission: 'http://165.227.167.80:3333/video/emission/',
 };
