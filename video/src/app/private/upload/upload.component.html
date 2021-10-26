@@ -1,0 +1,46 @@
+<app-nav></app-nav>
+<div class="container">
+    <br>
+    <div class="card">
+        <div class="card-body">
+            <div class="form-group">
+                <input type="text" name="title" placeholder="Nombre del video" class="form-control" [(ngModel)]="title">
+            </div>
+            <div class="form-group">
+                <div class="row">
+                    <div class="col-8">
+                        <label for="file-upload" class="file-content">
+                            <strong>Subir portada del video</strong>
+                            <input type="file" class="file" id="file-upload" accept=".png,.jpg" name="post"
+                                (change)="onLoadPost($event)" />
+                        </label>
+                    </div>
+                    <div class="col-4">
+                        <img #poster src="" style="width: 100%; height: 100px;">
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="row">
+                    <div class="col-8">
+                        <label for="video-upload" class="file-content">
+                            <strong>Subir el video</strong>
+                            <input type="file" class="file" id="video-upload" accept=".mp4" name="video"
+                                (change)="onVideoPost($event)" />
+                        </label>
+                    </div>
+                    <div class="col-4">
+                        <video #video src="" controls style="width: 100%; height: 100px;"></video>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <button type="button" (click)="onUpload()" class="btn btn-primary btn-block">SUBIR</button>
+            </div>
+            <div #barloading class="form-group btn-primary text-center" style="width: 0%; height: 20px;">
+                <strong> {{percentaje}}</strong>
+            </div>
+        </div>
+
+    </div>
+</div>

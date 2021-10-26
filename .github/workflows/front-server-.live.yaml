@@ -1,0 +1,19 @@
+name: front server live
+on:
+  #pull_request:
+  push:
+    branches: [main]
+    #types: [closed]
+    paths:
+      - "live/**"
+
+jobs:
+  integrate:
+    # if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+      - run: docker login -u ${{secrets.USERNAME_CANISTER}} -p ${{secrets.PASSWORD_CANISTER}} cloud.canister.io:5000
+      - run: cd live && npm install && npm run package && docker build -t "cloud.canister.io:5000/msmarcks/sol:latest" .
+      - run: docker push cloud.canister.io:5000/msmarcks/sol:latest

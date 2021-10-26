@@ -1,0 +1,28 @@
+<div class="continer">
+    <div class="row-grid">
+        <div class="row align-items-center justify-content-center container-title" style="height: 100vh; width: 100%;">
+            <div class="texto">LIFE ONLINE STREAM ON LIVE</div>
+        </div>
+        <div class="row align-items-center justify-content-center" style="height: 100vh; width: 100%;">
+            <div class="card" style="width: 20rem; opacity: 0.8;">
+                <div class="card-body">
+                    <form class="form-signin" #f="ngForm" (ngSubmit)="onSubmit()">
+                        <div class="text-center">
+                            <h1 class="h3 mb-3 font-weight-normal">INICIAR SESION</h1>
+                        </div>
+                        <div class="form-group">
+                            <input type="text" class="form-control" placeholder="Usuario" name="userSystem"
+                                [(ngModel)]="session.userSystem" />
+                        </div>
+                        <div class="form-group">
+                            <input type="password" class="form-control" placeholder="Clave" name="password"
+                                [(ngModel)]="session.password" />
+                        </div>
+                        <button class="btn btn-lg btn-primary btn-block" type="submit">Iniciar Sesion</button>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

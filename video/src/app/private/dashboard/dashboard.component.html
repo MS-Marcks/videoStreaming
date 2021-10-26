@@ -1,0 +1,16 @@
+<app-nav></app-nav>
+<div class="container">
+    <br>
+    <div class="card">
+        <div class="card-body container-video">
+            <div *ngFor="let item of dataSource" (click)="RedirectVideo(item.id)">
+                <div class="card">
+                    <div class="card-body" style="width: 100%;">
+                        <img src="{{urlBase}}{{item.preload}}" alt="{{item.title}}" style="width: 100%; height: 200px;">
+                        <strong>{{item.title}}</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

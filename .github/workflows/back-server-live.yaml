@@ -1,0 +1,38 @@
+name: back server live  
+on:                     
+  #pull_request:
+  push:                 
+    branches: [main]
+    #types: [closed]
+    paths:                
+      - "backend/**"
+
+jobs:                   
+  integrate:            
+    # if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest     
+    steps:
+      - uses: actions/checkout@v2     
+      - uses: actions/setup-node@v2  
+      - run: docker login -u ${{secrets.USERNAME_CANISTER}} -p ${{secrets.PASSWORD_CANISTER}} cloud.canister.io:5000   
+      - run: cd backend && docker build -t "cloud.canister.io:5000/msmarcks/back:latest" . 
+      - run: docker push cloud.canister.io:5000/msmarcks/back:latest      
+      - name: andrewtwydell/ssh
+        uses: AndrewTwydell/ssh-workflow@1.0.0
+        with:
+          # SSH Host
+          host: ${{ secrets.SSH_HOST }}
+          # User name
+          user: ${{ secrets.SSH_USERNAME }}
+          # User Password
+          password: ${{ secrets.PASSWORD_SSH }}
+          # Script to Run
+          script: | 
+            docker login -u ${{secrets.USERNAME_REPO}} -p ${{secrets.PASSWORD_REPO}} cloud.canister.io:5000
+            docker ps -a -q --filter "name=backapp" | grep -q . && docker stop backapp && docker rm -fv backapp && docker image rm cloud.canister.io:5000/msmarcks/back:latest || echo ""
+            docker run --name backapp -p "3000:3000" -e "KEY_TOKEN=DKCngTbQ0IzUMvqEto4ucxPHkPMrhXPsIkj6hsXDCjNb64zI9JyScaeW6fJ7SH8TResT5DUdnFsYbcRkzC35wRsYDuqe0yxaFNSVohPp1sHPP6seS88VB7y1gPMTsTZP" -e "TIME_PARTITION_CHUNK=102400" -d cloud.canister.io:5000/msmarcks/back:latest
+            exit
+
+            
+
+      
