@@ -6,3 +6,4 @@ RUN npm start
 COPY . /app/
 EXPOSE 3000
 CMD ["node","build/server.js"]
+
