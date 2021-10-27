@@ -11,7 +11,7 @@
                     <div class="col-8">
                         <label for="file-upload" class="file-content">
                             <strong>Subir portada del video</strong>
-                            <input type="file" class="file" id="file-upload" accept=".png,.jpg" name="post"
+                            <input #files type="file" [(ngModel)]="filePost" class="file" id="file-upload" accept=".png,.jpg" name="post"
                                 (change)="onLoadPost($event)" />
                         </label>
                     </div>
@@ -25,7 +25,7 @@
                     <div class="col-8">
                         <label for="video-upload" class="file-content">
                             <strong>Subir el video</strong>
-                            <input type="file" class="file" id="video-upload" accept=".mp4" name="video"
+                            <input  #files type="file" [(ngModel)]="fileVideo" class="file" id="video-upload" accept=".mp4" name="video"
                                 (change)="onVideoPost($event)" />
                         </label>
                     </div>

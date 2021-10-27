@@ -12,9 +12,10 @@ export class UploadComponent implements OnInit {
   @ViewChild('poster', { static: true }) poster: ElementRef | any;
   @ViewChild('video', { static: true }) video: ElementRef | any;
   @ViewChild('barloading', { static: true }) barloading: ElementRef | any;
+  @ViewChild('myInput', { static: true }) files: ElementRef | any;
 
-
-
+  fileVideo: any;
+  filePost: any;
   formPoster: FormData = new FormData();
   formVideo: FormData = new FormData();
   title: string = "";
@@ -35,7 +36,11 @@ export class UploadComponent implements OnInit {
         this.poster.nativeElement.src = data;
       };
       reader.readAsDataURL(e.target.files[0]);
+
     }
+    console.log(e.target.files[0])
+    console.log("hola")
+
   }
 
   onVideoPost(e: any): void {
@@ -49,6 +54,8 @@ export class UploadComponent implements OnInit {
       };
       reader.readAsDataURL(e.target.files[0]);
     }
+    console.log(e.target.files[0])
+    console.log("hola")
   }
   onUpload(): void {
     let uploadFile = false;
@@ -97,7 +104,8 @@ export class UploadComponent implements OnInit {
           if (res.body !== undefined) {
             if (res.body === "OK") {
               this.OnToast("SE SUBIO EL VIDEO EXTOSAMENTE", 200);
-              this.onReset()
+              this.onReset();
+
             }
           }
         }
@@ -115,6 +123,9 @@ export class UploadComponent implements OnInit {
     this.formVideo = new FormData();
     this.video.nativeElement.src = "";
     this.poster.nativeElement.src = "";
+    //this.files.nativeElement.value = "";
+    this.fileVideo = null;
+    this.filePost = null;
   }
 
 
