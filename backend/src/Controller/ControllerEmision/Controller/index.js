@@ -19,7 +19,7 @@ class ControllerLive {
         if (videoRange) {
             const parts = videoRange.replace(/bytes=/, "").split("-");
             const start = parseInt(parts[0], 10);
-            const end = (start + 102400) > videoSize ? (videoSize - 1) : (start + 102400);
+            const end = (start + 204800) > videoSize ? (videoSize - 1) : (start + 204800);
             const chunksize = (end - start) + 1;
             const file = fs.createReadStream(videoPath, { start, end });
             const head = {
