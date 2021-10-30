@@ -30,6 +30,7 @@
 - [RECOMENDACIONES](#id11)
 
 # **INTRODUCCIÓN** <a name="id1"></a>
+Las telecomunicaciones y las tecnologías de la información cumplen un rol crucial en nuestros sistemas sociales, económicos y políticos. Por medio de las telecomunicaciones se ha facilitado enormemente la vida cotidiana, permitiendo entrar en contacto con personas de la comunidad y del mundo entero, de manera fácil y rápida. El auge de estas tecnologías, especialmente del Internet, constituye una revolución del conocimiento. Actualmente casi cualquier persona puede acceder a información confiable y directa, y las puertas del saber están abiertas para cada vez más personas. La posibilidad que nos ofrecen las telecomunicaciones para intercambiar información es aprovechada por las distintas empresas para ampliar sus mercados más allá del país en el que se encuentran. La globalización a gran escala que se ve hoy en día no sería posible de no ser por la ubicuidad de los factores de producción y de los mercados que estas tecnologías permiten. Hoy en día es más fácil que nunca realizar una transferencia de dinero de un continente a otro, por ejemplo. Igualmente, cualquier persona con acceso a Internet puede adquirir productos que se ofrezcan en otro lugar del planeta, y recibirlos por medio de los diferentes servicios de encomiendas.
 
 # **ENFOQUE DEL SISTEMA** <a name="id2"></a>
 
@@ -298,3 +299,6 @@ jobs: # En esta parte se hace el encapsulamiento de la subida de toda la informa
 ```
 # **CONCLUSIONES** <a name="id10"></a>
 # **RECOMENDACIONES** <a name="id11"></a>
+- Para el uso adecuado de las telecomunicaciones se debe de poseer un grado de experiencia en dicho ámbito y más para gestionar un canal de comunicación para que sea transparente y seguro para la vía libre de información por ello es recomendable aprender a gestionar y mantener en marcha dicho sistemas de telecomunicaciones.
+
+- En el caso que desean gestionar un sistema de gran escala deberán de aprender herramientas de autogestión, autobalance para que no se sobrecargue dichas aplicaciones y su funcionamiento estén en óptimas condiciones.
