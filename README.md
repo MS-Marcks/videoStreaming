@@ -58,13 +58,12 @@ Pero si el encabezado Range está presente durante una solicitud del cliente, el
 
 
 ## **ARQUITECTURA**
-puede tener la siguiente arquitectura de diseño. El cliente envía directamente una solicitud HTTP al servidor de archivos, ya que el cliente espera una respuesta de contenido parcial **(Status code 206)**, se agrega el encabezado del rango y el servidor responde con el fragmento de datos solicitado junto con los encabezados Content-Length y Content-Range.
+El cliente envía directamente una solicitud HTTP al servidor de archivos, ya que el cliente espera una respuesta de contenido parcial **(Status code 206)**, se agrega el encabezado del rango y el servidor responde con el fragmento de datos solicitado junto con los encabezados Content-Length y Content-Range.
 
 ![imagen](img/005.png)
 
 
-Pero en algunos casos, los servidores de archivos no deben estar expuestos al público debido a problemas de seguridad. También para la modularidad, un servidor de archivos generalmente se construye en una instancia separada para que múltiples microservicios de backend que están expuestos a clientes web puedan acceder a los mismos recursos.
-Supongamos que para este ejemplo tendrá la siguiente arquitectura en su lugar:
+Un servidor de archivos generalmente se construye en una instancia separada para que múltiples servicios del backend que están expuestos a clientes web puedan acceder a los mismos recursos. entonces se tomara el siguiente planteamiento de la arquitectura
 
 ![imagen](img/006.png)
 
