@@ -237,8 +237,6 @@ jobs: # En esta parte se debe hacer el encapsulamiento de la subida de toda la i
   }
   export default ControllerLive;
   ```
-
-
   ## **CONFIGURACION PARA LA CREACION DE LA IMAGEN DEL BACKEND EN DOCKER** <a name="id8.2"></a>
   Se creara el archivo Docker en la raiz del proyecto de backend el cual tendra el nombre de *Dockerfile* dicho archivo contendra la configuración para darle las instrucciones a Docker de cuales seran las instrucciones necesarias para crear la imagen.
   
