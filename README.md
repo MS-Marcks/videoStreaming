@@ -46,7 +46,7 @@ El contenido parcial HTTP 206 es básicamente un código de respuesta de estado 
 
 En cual hay que estabelecer una seria de encabezados para que el contenido parcial funcione correctamente:
 
-- **Range:** enviado desde el cliente web para solicitar un rango de datos del contenido. Ejemplo: "Rango: bytes = 0-10000"
+- **Range:** enviado desde el cliente web para solicitar un rango de datos del contenido. Ejemplo: "Range: bytes = 0-10000"
 
 - **Content-Length:** para que el cliente web sepa cuánto se envía la longitud total del contenido en función de la solicitud. En el ejemplo del rango anterior, el resultado será "Content-Length: 10000"
 
