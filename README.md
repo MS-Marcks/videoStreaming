@@ -1,4 +1,6 @@
 # **StreamOnLive_SOL**
+
+# [DOCUMENTACION PDF](doc/DOCUMENTACION.pdf)
 # **INDICE**
 - [INTRODUCCIÓN](#id1)
 - [ENFOQUE DEL SISTEMA](#id2)
@@ -126,11 +128,11 @@ Para la parte de la visualizacion se creó una aplicación en angular para lleva
   El contenido del Dockerfile es el siguiente.
   ```Dockerfile
   FROM nginx:1.18.0-alpine # Primero se coloca la imagen que se utilizará, que es una imagen de NGINX.
-  COPY dist/live /usr/share/nginx/html #   Luego se colocará el comando para copiar el código de la aplicación en la carpeta del servidor.
-  RUN rm /etc/nginx/conf.d/default.conf #   Posteriormente se colocará el comando que eliminará el documento de configuración por defecto de NGINX.
-  COPY nginx/nginx.conf /etc/nginx/conf.d # Luego se copiará la configuración realizada anteriormente en la ruta establecida.
+  COPY dist/live /usr/share/nginx/html #Luego se colocará el comando para copiar el código de la aplicación en la carpeta del servidor.
+  RUN rm /etc/nginx/conf.d/default.conf #Posteriormente se colocará el comando que eliminará el documento de configuración por defecto de NGINX.
+  COPY nginx/nginx.conf /etc/nginx/conf.d #Luego se copiará la configuración realizada anteriormente en la ruta establecida.
   EXPOSE 443 # Se establecerá el puerto de la aplicación.
-  CMD ["nginx","-g","daemon off;"] # Por último, se colocará el comando que inicia el servicio de NGINX y se indicará que el proceso en segundo plano estará desactivado.
+  CMD ["nginx","-g","daemon off;"] #Por último, se colocará el comando que inicia el servicio de NGINX y se indicará que el proceso en segundo plano estará desactivado.
   ```
 
   ## **COMANDO NECESARIO PARA CREAR LA IMAGEN Y PARA INICIAR LA IMAGEN**<a name="id7.5"></a>
