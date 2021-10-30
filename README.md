@@ -6,6 +6,9 @@
 - [DIAGRAMA PRINCIPAL DEL SERVIDOR](#id4)
 - [CONFIGURACIÓN DEL SERVIDOR PRINCIPAL](#id5)
   - [INSTALACIÓN DEL DOCKER](#id5.1)
+- [ARQUITECTURA DE LA APLICACION](#id20)
+  - [CONTENIDO PARCIAL HTTP 206](#id21)
+  - [ARQUITECTURA](#id22)
 - [STREAM ON LIVE (SOL FRONTEND)](#id7)
   - [DEFINICION DE LA APLICACION](#id7.1)
   - [CONFIGURACIÓN DEL NGINX EN ANGULAR](#id7.2)
@@ -17,6 +20,7 @@
   - [GITHUB ACTIONS DEL SERVIDOR DEL FRONTEND](#id7.9)
 - [STREAM ON LIVE (SOL BACKEND)](#id8)
   - [DEFINICIÓN DE LOS QUE HACE LA APLICACIÓN](#id8.1)
+  - [CONTROLADOR PRINCIPAL DE LA TRANSMISION POR DEMANDA](#id8.11)
   - [CONFIGURACIÓN PARA LA CREACIÓN DE LA IMAGEN DEL BACKEND EN DOCKER](#id8.2)
   - [COMANDO NECESARIO PARA CREAR LA IMAGEN Y PARA LEVANTAR LA IMAGEN](#id8.3)
     - [COMANDO PARA CREAR LA IMAGEN](#id8.4)
@@ -35,6 +39,40 @@ Para el ejemplo de un servidor de streaming se usara el proveedor en la nube Dig
 
   - ## **INSTALACION DE DOCKER** <a name="id5.1"></a>
       En el caso para facilitar el despliegue de las aplicaciones se usara Docker en cual podrá acceder al siguiente enlace para la instalación(Ubuntu): [Docker](https://www.digitalocean.com/community/tutorials/como-instalar-y-usar-docker-en-ubuntu-18-04-1-es)
+
+# **ARQUITECTURA DE LA APLICACION**
+## **CONTENIDO PARCIAL HTTP 206**
+El contenido parcial HTTP 206 es básicamente un código de respuesta de estado de éxito que indica que la solicitud se ha realizado correctamente y que el cuerpo contiene los rangos de datos solicitados, como se describe en el encabezado Rango de la solicitud.
+
+En cual hay que estabelecer una seria de encabezados para que el contenido parcial funcione correctamente:
+
+- **Range:** enviado desde el cliente web para solicitar un rango de datos del contenido. Ejemplo: "Rango: bytes = 0-10000"
+
+- **Content-Length:** para que el cliente web sepa cuánto se envía la longitud total del contenido en función de la solicitud. En el ejemplo del rango anterior, el resultado será "Content-Length: 10000"
+
+- **Content-Range:** Para conocer el rango de datos del contenido que se envía desde el servidor y también la longitud del contenido total del recurso. Ejemplo: "Content-Range: bytes 0-10000 / 2445339" Esto muestra que el servidor está respondiendo con 10000 bytes de datos, pero el total de datos que se pueden enviar es de hasta 2445339 bytes.
+
+Cuando se habla de transmisión de video, todavía es posible implementarlo incluso sin usar contenido parcial HTTP siempre que el encabezado "Content-Disposition" no esté presente dentro del encabezado de respuesta. Pero buscar una determinada parte del video será imposible ya que la solicitud enviada será respondida con todo el video comenzando por el inicio del archivo.
+Pero si el encabezado Range está presente durante una solicitud del cliente, el servidor podría responder a través del contenido parcial HTTP 206 ya que el servidor conoce exactamente con parte de los datos que el cliente necesita. Esto podría hacer que los usuarios salten directamente al minuto X del video siempre que el servidor lo admita.
+
+
+## **ARQUITECTURA**
+puede tener la siguiente arquitectura de diseño. El cliente envía directamente una solicitud HTTP al servidor de archivos, ya que el cliente espera una respuesta de contenido parcial **(Status code 206)**, se agrega el encabezado del rango y el servidor responde con el fragmento de datos solicitado junto con los encabezados Content-Length y Content-Range.
+
+![imagen](img/005.png)
+
+
+Pero en algunos casos, los servidores de archivos no deben estar expuestos al público debido a problemas de seguridad. También para la modularidad, un servidor de archivos generalmente se construye en una instancia separada para que múltiples microservicios de backend que están expuestos a clientes web puedan acceder a los mismos recursos.
+Supongamos que para este ejemplo tendrá la siguiente arquitectura en su lugar:
+
+![imagen](img/006.png)
+
+- El cliente web solicita el servicio de backend para el archivo de video.
+- Solicitudes de servicio de backend al servidor de archivos según el archivo solicitado.
+- El servidor de archivos responde con el archivo al servicio de backend.
+- El servicio de backend envía el archivo recibido como respuesta al cliente web.
+
+El servicio de backend actúa como un proxy donde se reenvían los encabezados del cliente o del servidor. Esto es para asegurarse de que los datos que se envían al cliente sean exactamente los mismos que se reciben del servidor de archivos. Por lo tanto, una buena práctica al crear el servicio de backend es que no debe descargar todo el archivo del servidor de archivos, sino solo transmitir los datos solicitados.
 
 # **STREAM ON LIVE (SOL FRONTEND)**<a name="id7"></a>
 Para la parte de la visualizacion se creó una aplicación en angular para llevar todo el manejo y visualización de los videos en transmision por demanda que se este viendo actualmente, así como las conexiones necesarias para que todo funcione y que el usuario pueda interactuar con todas las funcionalidades que ofrece el sistema.
@@ -145,6 +183,61 @@ jobs: # En esta parte se debe hacer el encapsulamiento de la subida de toda la i
 
   ## **DEFINICION DE LA APLICACION** <a name="id8.1"></a>
   El orquestador sera el encargado de darle la logica funcional al sistema y de la misma manera realizara la comunicación con el servidor.
+  ## **CONTROLADOR PRINCIPAL DE LA TRANSMISION POR DEMANDA**<a name="id8.11"></a>
+  ```js
+  'use strict';// se establece el el modo estricto para evitar errores de escritura durante el codigo
+  import path from "path"; // se importara el modulo path, para manejar las rutas de los documentos 
+  import fs from "fs"; // se importara el modulo fs, para manejar los documentos para leerlos, escribir o manipular cualquier informacion
+  import db from "../../../config/db"; // se importara el modulo de la base de datos
+
+  class ControllerLive {
+      static async SearchDataVideo(req, res) {
+          let id = parseInt(req.params.id); // se obtiene el id del video actual
+          const videoInfo = db.db[1].find(video => video.id === id); // se busca la informacion del video dentro de la base de datos
+          if (!videoInfo) { // en dado caso que el video no existe envia un mensaje que indica que no se encontro el vidoe
+              res.json({ message: "none" });
+              return;
+          }
+          const videoPath = path.join(path.resolve(".", "media", videoInfo.src)); // en dado caso si encuentra el video, se guardara en una constante la ruta abosuluta del vidoe
+          const videoStat = fs.statSync(videoPath); // en cual se recuperara todos los metadatos del video, como los minutos, el tamaño, u otra informacion relevante que sea necesaria
+          const videoSize = videoStat.size; // se guarda en una constante el tamanño en bytes del video
+          const videoRange = req.headers.range; // en dado caso la aplicacion del frontend ya ha estado solicitando fragmento del video, entonces se establecera en encabezado range para indicar que fragmento del video se esta transfiriendo a la aplicacion del frontend
+          if (videoRange) { // en el dado caso que ya se hubiera solicitado entonces se procedera en entrar
+              const parts = videoRange.replace(/bytes=/, "").split("-"); // se obitene el inicio del byte del encabezado
+              const start = parseInt(parts[0], 10); // se convierte en un entero para poder operarlo
+              const end = (start + 204800) > videoSize ? (videoSize - 1) : (start + 204800); // se estable el final del fragmento a enviar, en dado que si supera al tamaño del video se envira el tamaño del video completo
+              const chunksize = (end - start) + 1; // se guarda en una constate el tamaño del fragmento que enviara dicho servidor
+              const file = fs.createReadStream(videoPath, { start, end }); // se establece una constante para enviar dicho fragmento a la pagina del frontend
+
+              // se establece los encabezados de la peticion, 
+              // en la cual se debe de establecer que se pueda aceptar rangos en la peticion
+              // tambien se debe de estabelecer que fragmento de enviara en esta peticion 
+
+              const head = {
+                  'Content-Range': `bytes ${start}-${end}/${videoSize}`,
+                  'Accept-Ranges': 'bytes',
+                  'Content-Length': chunksize,
+                  'Content-Type': 'video/mp4',
+              };
+
+              res.writeHead(206, head);// en cual se establecera el envio de la peticion, recalcando en el codigo de estado que es el 206 que sin establecer este codigo de estado no podra funcionar la transmion en demanda porque el codigo 206 indica que Partial Content que indica que es una peticon Partial Content y no completa , en cual el navegador cliente debera de estar solicitando distintas peticiones para recuperar todo documento
+              file.pipe(res);// en cual para crear la transmion de los datos de fragmentos se debera de crear un pipe "una tuberia" par para poder crear la transimion de los datos fluidamente 
+          } else { // en dado la peticion no trae el fragmento que quiere obtener
+              // se establece el encabezado de la peticion
+              const head = {
+                  'Content-Length': videoSize,
+                  'Content-Type': 'video/mp4',
+              };
+              // en cual se establece la conexion inical con estado de estado de 200 con el encabezado
+              res.writeHead(200, head);
+              // creando una tuber para transimir por fragmento pero establecidos por el sistema hacia la palicacion web
+              fs.createReadStream(videoPath).pipe(res);
+          }
+      }
+  }
+  export default ControllerLive;
+  ```
+
 
   ## **CONFIGURACION PARA LA CREACION DE LA IMAGEN DEL BACKEND EN DOCKER** <a name="id8.2"></a>
   Se creara el archivo Docker en la raiz del proyecto de backend el cual tendra el nombre de *Dockerfile* dicho archivo contendra la configuración para darle las instrucciones a Docker de cuales seran las instrucciones necesarias para crear la imagen.
